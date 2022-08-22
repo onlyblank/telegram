@@ -12,6 +12,10 @@
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
 	},
+	"engines": {
+		"node": ">=10.16.0 <=14.x.x",
+		"npm": "^6.0.0"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/onlyblank/telegram.git"
