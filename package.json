@@ -13,8 +13,8 @@
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
 	},
 	"engines": {
-		"node": ">=10.16.0 <=14.x.x",
-		"npm": "^6.0.0"
+		"node": "16.x",
+		"npm": "8.x"
 	},
 	"repository": {
 		"type": "git",
