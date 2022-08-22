@@ -7,7 +7,6 @@
 		"start": "node dist/index.js",
 		"start:dev": "ts-node src/index.ts",
 		"build": "tsc",
-		"heroku-prebuild": "npm run deploy",
 		"deploy": "bash deploy.sh",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
