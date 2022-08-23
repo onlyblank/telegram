@@ -5,7 +5,7 @@ export function publishTaskMessage(bot: TelegramBot) {
         bot.sendMessage(msg.chat.id, 'task image', {
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: 'Решитьы', callback_data: 'task_answer' }],
+                    [{ text: 'Решить', callback_data: 'task_answer' }],
                 ],
             },
         });
