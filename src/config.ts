@@ -36,4 +36,4 @@ export const config: Config = Object.fromEntries(
     Object.entries(process.env).filter(([key]) => allowedKeys.includes(key))
 ) as unknown as Config;
 
-config.APP_URL = `https://${process.env.APP_NAME}.herokuapp.com`;
+config.APP_URL = `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`;
