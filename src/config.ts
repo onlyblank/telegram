@@ -4,14 +4,14 @@ dotenv.config();
 
 const types = {
     TOKEN: ['string'],
-    HEROKU: ['boolean', 'undefined'],
+    HEROKU_APP_ID: ['string', 'undefined'],
     PORT: ['number', 'undefined'],
     APP_URL: ['string', 'undefined'],
 } as const;
 
 interface Config extends Partial<Record<keyof typeof types, any>> {
     TOKEN: string;
-    HEROKU?: boolean;
+    HEROKU_APP_ID?: boolean;
     PORT?: number;
     APP_URL?: string;
 }

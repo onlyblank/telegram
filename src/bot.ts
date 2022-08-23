@@ -2,7 +2,7 @@ import * as TelegramBot from 'node-telegram-bot-api';
 import { config } from './config';
 
 function getOptions() {
-    const isHeroku = !!config.HEROKU;
+    const isHeroku = !!config.HEROKU_APP_ID;
 
     if (!isHeroku) {
         return {
@@ -25,6 +25,6 @@ function getOptions() {
 }
 
 export const bot = new TelegramBot(config.TOKEN, getOptions());
-if (config.HEROKU) {
+if (config.HEROKU_APP_ID) {
     bot.setWebHook(`${config.APP_URL}/bot${config.TOKEN}`);
 }
