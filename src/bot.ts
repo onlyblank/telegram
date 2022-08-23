@@ -28,3 +28,7 @@ export const bot = new TelegramBot(config.TOKEN, getOptions());
 if (config.HEROKU_APP_ID) {
     bot.setWebHook(`${config.APP_URL}/bot${config.TOKEN}`);
 }
+
+bot.on('webhook_error', error => {
+    console.log(error);
+});
