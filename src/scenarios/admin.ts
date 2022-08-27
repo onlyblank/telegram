@@ -1,4 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
+import * as path from 'path';
+import * as request from '../request';
 
 const adminUsernames = ['doritosxxx'];
 
@@ -26,7 +28,20 @@ export function adminScenario(bot: TelegramBot) {
         })
     );
 
-    const publishHandler = msg => {
+    bot.onText(
+        /^\/error/,
+        withAdmin(msg => {
+            bot.sendPhoto(
+                msg.chat.id,
+                path.resolve(__dirname, '../assets/img/error.jpg')
+            );
+        })
+    );
+
+    const publishHandler = async (msg: TelegramBot.Message) => {
+        const res = await request.get('/api/tasks/1');
+        console.log(res.data);
+
         bot.sendMessage(msg.chat.id, 'task image', {
             reply_markup: {
                 inline_keyboard: [
@@ -34,8 +49,6 @@ export function adminScenario(bot: TelegramBot) {
                 ],
             },
         });
-        bot.on('message', publishHandler);
-        bot.on('channel_post', publishHandler);
     };
 
     bot.onText(/^\/publish/, withAdmin(publishHandler));

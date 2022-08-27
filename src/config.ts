@@ -7,6 +7,8 @@ const types = {
     HEROKU_APP_ID: ['string', 'undefined'],
     PORT: ['number', 'undefined'],
     APP_URL: ['string', 'undefined'],
+    API_URL: ['string'],
+    API_TOKEN: ['string'],
 } as const;
 
 interface Config extends Partial<Record<keyof typeof types, any>> {
@@ -14,7 +16,10 @@ interface Config extends Partial<Record<keyof typeof types, any>> {
     HEROKU_APP_ID?: boolean;
     PORT?: number;
     APP_URL?: string;
+    API_URL: string;
+    API_TOKEN: string;
 }
+
 /*
 const notDefined = [];
 for (const [key, values] of Object.entries(types)) {
