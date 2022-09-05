@@ -1,5 +1,7 @@
+import { Axios, AxiosResponse } from 'axios';
 import TelegramBot from 'node-telegram-bot-api';
 import * as path from 'path';
+import { parseCommand } from '../heplers';
 import * as request from '../request';
 
 const adminUsernames = ['doritosxxx'];
@@ -21,6 +23,7 @@ function withAdmin<T>(
 }
 
 export function adminScenario(bot: TelegramBot) {
+    // Debug.
     bot.onText(
         /^\/debug/,
         withAdmin(msg => {
@@ -28,6 +31,7 @@ export function adminScenario(bot: TelegramBot) {
         })
     );
 
+    // Send image test.
     bot.onText(
         /^\/error/,
         withAdmin(msg => {
@@ -38,9 +42,17 @@ export function adminScenario(bot: TelegramBot) {
         })
     );
 
+    // Publish task.
     const publishHandler = async (msg: TelegramBot.Message) => {
-        const res = await request.get('/api/tasks/1');
-        console.log(res.data);
+        const { args } = parseCommand(msg.text);
+        const taskId = +args[0] || 1;
+
+        let res: AxiosResponse<any, any>;
+        try {
+            res = await request.get(`/api/tasks/${taskId}`);
+        } catch (e) {
+            return bot.sendMessage(msg.chat.id, 'Task not found');
+        }
 
         bot.sendMessage(msg.chat.id, 'task image', {
             reply_markup: {
@@ -52,4 +64,12 @@ export function adminScenario(bot: TelegramBot) {
     };
 
     bot.onText(/^\/publish/, withAdmin(publishHandler));
+
+    // Unbind course from chat.
+    bot.onText(
+        /^\/bind$/,
+        withAdmin(async msg => {
+            //cosnt res = await request.post('/api//unbind', {
+        })
+    );
 }

@@ -9,6 +9,8 @@ const types = {
     APP_URL: ['string', 'undefined'],
     API_URL: ['string'],
     API_TOKEN: ['string'],
+    WEBSHOT_URL: ['string'],
+    FRONTEND_URL: ['string'],
 } as const;
 
 interface Config extends Partial<Record<keyof typeof types, any>> {
@@ -18,6 +20,8 @@ interface Config extends Partial<Record<keyof typeof types, any>> {
     APP_URL?: string;
     API_URL: string;
     API_TOKEN: string;
+    WEBSHOT_URL: string;
+    FRONTEND_URL: string;
 }
 
 /*
