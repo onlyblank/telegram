@@ -9,7 +9,7 @@ if (!shell.which('heroku')) {
 
 function loadEnv(env) {
     const lines = fs
-        .readFileSync(path.resolve(__dirname, './.env'))
+        .readFileSync(path.resolve(__dirname, './.prod.env'))
         .toString()
         .split(/\r?\n/);
 
@@ -25,7 +25,7 @@ module.exports = config => {
     const APP_NAME = env.TELEGRAM_APP_NAME;
 
     shell.cd(__dirname);
-    const vars = ['TOKEN', 'API_URL', 'API_TOKEN'];
+    const vars = ['TOKEN', 'API_URL', 'API_TOKEN', 'WEBSHOT_URL', 'FRONTEND_URL'];
     for (const name of vars) {
         const result = shell.exec(`heroku config:get ${name} -a ${APP_NAME}`);
         if (result.code === 0 && result.stdout.trim() !== env[name]) {
