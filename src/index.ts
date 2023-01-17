@@ -6,12 +6,14 @@
 // adminScenario(bot);
 
 import { config } from './config';
-import * as webshot from './webshot';
 
-webshot
-    .createScreenshot({
-        url: config.FRONTEND_URL + '/tasks/' + 1,
-    })
-    .then(res => {
-        console.log(res.data);
-    });
+console.log(config);
+// import * as webshot from './webshot';
+
+// webshot
+//     .createScreenshot({
+//         url: config.FRONTEND_URL + '/tasks/' + 1,
+//     })
+//     .then(res => {
+//         console.log(res.data);
+//     });
