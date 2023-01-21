@@ -1,19 +1,31 @@
-// import { bot } from './bot';
-// import { adminScenario } from './scenarios/admin';
-// import { publishTaskMessage } from './scenarios/publishTaskMessage';
-
-// publishTaskMessage(bot);
-// adminScenario(bot);
+import { Bot } from 'grammy';
+import { bot } from './bot';
+import { isRegistered } from './cache';
 
 import { config } from './config';
+import { authorize } from './request';
 
-console.log(config);
-// import * as webshot from './webshot';
+function init(): Promise<any> {
+    return authorize().then(() => Promise.all([]));
+}
 
-// webshot
-//     .createScreenshot({
-//         url: config.FRONTEND_URL + '/tasks/' + 1,
-//     })
-//     .then(res => {
-//         console.log(res.data);
-//     });
+function createScenarios(): Bot {
+    bot.command('start', async ctx => {
+        const user = ctx.message.from.username;
+
+        const registered = await isRegistered.get(user);
+        ctx.reply(`Registered: ${registered}`);
+    });
+
+    return bot;
+}
+
+init().then(() => {
+    const bot = createScenarios();
+
+    bot.start({
+        onStart(info) {
+            console.log('Bot started', { info });
+        },
+    });
+})
