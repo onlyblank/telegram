@@ -2,26 +2,30 @@ import { Bot } from 'grammy';
 import { bot } from './bot';
 import { isRegistered } from './cache';
 
-import { config } from './config';
 import { authorize } from './request';
+import { useConversations } from './scenarios';
 
-function init(): Promise<any> {
-    return authorize().then(() => Promise.all([]));
+function init() {
+    return authorize()
+        .then(() => bot);
 }
 
-function createScenarios(): Bot {
+init().then((bot) => {
+    useConversations(bot);
+
     bot.command('start', async ctx => {
         const user = ctx.message.from.username;
-
         const registered = await isRegistered.get(user);
-        ctx.reply(`Registered: ${registered}`);
+
+        await ctx.reply(`Registered: ${registered}`);
+
+        if (registered) {
+            await ctx.conversation.enter("loopConversation");
+        }
+        else {
+            await ctx.conversation.enter("registrationConversation");
+        }
     });
-
-    return bot;
-}
-
-init().then(() => {
-    const bot = createScenarios();
 
     bot.start({
         onStart(info) {

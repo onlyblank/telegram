@@ -11,10 +11,7 @@ export const authorize = withRetries(
             password: config.STRAPI_PASSWORD,
         })
             .then(response => {
-                // Handle success.
-                console.log('Well done!');
-                console.log('User profile', response.data.user);
-                console.log('User token', response.data.jwt);
+                console.log('Logged in as', response.data.user);
                 STRAPI_JWT = response.data.jwt;
             }),
     3

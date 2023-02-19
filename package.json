@@ -26,6 +26,7 @@
 	},
 	"homepage": "https://github.com/onlyblank/telegram#readme",
 	"dependencies": {
+		"@grammyjs/conversations": "^1.1.0",
 		"axios": "^0.27.2",
 		"grammy": "^1.13.1",
 		"ts-dotenv": "^0.9.0"
