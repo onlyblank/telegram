@@ -29,7 +29,7 @@
 		"@grammyjs/conversations": "^1.1.0",
 		"axios": "^0.27.2",
 		"grammy": "^1.13.1",
-		"ts-dotenv": "^0.9.0"
+        "ts-dotenv": "^0.9.1"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^5.30.6",
