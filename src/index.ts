@@ -18,21 +18,8 @@ init().then((bot) => {
     useAuthenticationBoundary(bot);
 
     bot.command('start', async ctx => {
-        // const user = ctx.message.from.username;
         await ctx.reply(`Привет, ${ctx.from?.first_name}`);
-        // const registered = await isRegistered.get(user);
-
-        // await ctx.reply(`Registered: ${registered}`);
-
-        // if (registered) {
-        //     await ctx.conversation.enter("loopConversation");
-        // }
-        // else {
-        //     await ctx.conversation.enter("registrationConversation");
-        // }
     });
-
-
 
     bot.start({
         onStart(info) {
