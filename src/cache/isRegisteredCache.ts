@@ -1,29 +1,37 @@
-import * as request from '../request';
-import { GET } from '../resources/resources';
 
-const cache = new Set<string>();
+import { getUserByTelegramUsername } from '../queries/user';
 
-export const isRegistered = {
-    async get(username: string): Promise<boolean> {
+type Username = string;
+type Email = string;
+
+// Has `telegram_username` => has `email`
+// Has `email` => might not have `telegram_username` 
+const cache = new Map<Username, Email>();
+
+export const userEmail = {
+    /**
+     * @param username Telegram username.
+     * @returns string if user registered 
+     * undefined if user is not registered
+     */
+    async get(username: Username): Promise<Email | undefined> {
         if (!username) {
-            return false;
-        }
-        if (cache.has(username)) {
-            return true;
+            return undefined;
         }
 
-        return request.get<[] | [GET.User]>(`/users?filters[username][$eq]=${username}`).then(({ data }) => {
-            const isRegistered = Boolean(data[0]);
-            if (isRegistered) {
-                cache.add(username);
-            }
+        const email = cache.get(username);
 
-            return isRegistered;
-        }).catch(() => false);
+        if(email){
+            return email;
+        }
+
+        const user = await getUserByTelegramUsername(username);
+        if(user && user.email){
+            cache.set(username, user.email);
+            return user.email;
+        }
+
+        return undefined;
     },
-
-    async set(nickname: string, value: boolean): Promise<void> {
-        // TODO
-    }
 };
 

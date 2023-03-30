@@ -8,6 +8,7 @@ export namespace GET {
         id: number;
         username: string;
         email: string;
+        telegram_username: string | null;
         confirmed: boolean;
         blocked: boolean;
     }
@@ -19,5 +20,10 @@ export namespace POST {
         email: string;
         confirmed?: boolean;
         blocked?: boolean;
+    }
+
+    export interface RegisteredUserData {
+        jwt: string,
+        user: GET.User,
     }
 }
