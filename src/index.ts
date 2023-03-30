@@ -1,25 +1,23 @@
 import { GrammyError, HttpError } from 'grammy';
-import { bot } from './bot';
+import { createBot } from './bot';
+import { registerCommands, useCommands } from './commands';
 
 import { authorize } from './request';
 import { useConversations } from './scenarios';
 import { useAuthenticationBoundary } from './scenarios/useAuthentication';
 
-function init() {
-    return authorize()
-        .then(() => bot);
-}
+const init = () => authorize().then(createBot).then(async bot => {
+    await registerCommands(bot);
+    return bot;
+})
 
 init().then((bot) => {
-
-    // useStartCommand(bot);
     useConversations(bot);
 
     useAuthenticationBoundary(bot);
 
-    bot.command('start', async ctx => {
-        await ctx.reply(`Привет, ${ctx.from?.first_name}`);
-    });
+    useCommands(bot);
+
 
     bot.start({
         onStart(info) {
