@@ -85,6 +85,7 @@ export async function authenticationConversation(conversation: Conversation<any>
     }
     catch (error) {
         await ctx.reply("Неизвестная ошибка. Попробуйте позже.");
+        // Dont throw to keep user inside conversation.
         console.error(error)
     }
 }
