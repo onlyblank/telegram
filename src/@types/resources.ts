@@ -12,6 +12,11 @@ export namespace GET {
         confirmed: boolean;
         blocked: boolean;
     }
+
+    export interface Course extends Updatable {
+        id: number;
+        name: string,
+    }
 }
 
 export namespace POST {
