@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { GrammyError, HttpError } from 'grammy';
 import { createBot } from './bot';
 import { registerCommands, useCommands } from './commands';
@@ -25,12 +26,17 @@ init().then((bot) => {
         },
     });
 
+    const ERROR_SEPARATOR = '='.repeat(50)
+
     bot.catch((err) => {
         const ctx = err.ctx;
+        console.error(ERROR_SEPARATOR);
         console.error(`Error while handling update ${ctx.update.update_id}:`);
         const e = err.error;
-        if (e instanceof GrammyError) {
-            console.error("Error in request:", e.description);
+        if (e instanceof AxiosError){
+            console.error("Error in axios request:", e.request.path, e.request?.body);
+        } else if (e instanceof GrammyError) {
+            console.error("Error in grammY request:", e.description);
         } else if (e instanceof HttpError) {
             console.error("Could not contact Telegram:", e);
         } else {
