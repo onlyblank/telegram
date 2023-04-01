@@ -1,11 +1,13 @@
 import { Bot } from "grammy";
 import { coursesCommand } from "./courses.command";
+import { profileCommand } from "./profile.command";
 import { startCommand } from "./start.command";
 import { Command } from "./types";
 
 const commands: Command[] = [ 
     startCommand,
-    coursesCommand
+    coursesCommand,
+    profileCommand,
 ]; 
 
 export const useCommands = (bot: Bot) => {
