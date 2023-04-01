@@ -17,6 +17,11 @@ export namespace GET {
         id: number;
         name: string,
     }
+
+    export interface Test extends Updatable {
+        id: number,
+        title: string,
+    }
 }
 
 export namespace POST {
