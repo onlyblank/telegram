@@ -12,4 +12,4 @@ export const createBot = () => {
     bot.use(conversations());
 
     return bot;
-}
+};

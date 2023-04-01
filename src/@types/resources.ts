@@ -15,12 +15,12 @@ export namespace GET {
 
     export interface Course extends Updatable {
         id: number;
-        name: string,
+        name: string;
     }
 
     export interface Test extends Updatable {
-        id: number,
-        title: string,
+        id: number;
+        title: string;
     }
 }
 
@@ -33,7 +33,7 @@ export namespace POST {
     }
 
     export interface RegisteredUserData {
-        jwt: string,
-        user: GET.User,
+        jwt: string;
+        user: GET.User;
     }
 }
