@@ -19,3 +19,20 @@ export const useCommands = (bot: Bot) => {
 }
 
 export const registerCommands = (bot: Bot) => bot.api.setMyCommands(commands.map(({ command, description }) => ({ command, description })));
+
+export const useCallbackQueries = (bot: Bot) => {
+    const registerFunctions = commands
+        .filter(command => command.callbackQueryRegisterFunctions)
+        .flatMap(({ callbackQueryRegisterFunctions }) => callbackQueryRegisterFunctions);
+
+    for(const registerFunction of registerFunctions){
+        if(registerFunction) {
+            registerFunction(bot);
+        }
+    }
+
+    bot.on("callback_query:data", async (ctx) => {
+        await ctx.answerCallbackQuery();
+        throw new Error("Unknown button event with payload: " +ctx.callbackQuery.data);
+    });
+}

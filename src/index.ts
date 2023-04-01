@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { GrammyError, HttpError } from 'grammy';
 import { createBot } from './bot';
-import { registerCommands, useCommands } from './commands';
+import { registerCommands, useCallbackQueries, useCommands } from './commands';
 
 import { authorize } from './request';
 import { useConversations } from './scenarios';
@@ -18,7 +18,7 @@ init().then((bot) => {
     useAuthenticationBoundary(bot);
 
     useCommands(bot);
-
+    useCallbackQueries(bot);
 
     bot.start({
         onStart(info) {
