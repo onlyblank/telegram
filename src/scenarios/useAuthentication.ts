@@ -1,8 +1,7 @@
 import { Conversation, createConversation } from "@grammyjs/conversations";
 import { Bot, NextFunction } from "grammy";
-import { attachTelegramUsername, getUserByEmail } from "../queries/user";
+import { attachTelegramUsername, getUserByEmail, getUserCachedData } from "../queries/user";
 import { MyContext } from "../types";
-import { userEmail } from '../cache';
 import { ConversationError } from "./conversationError";
 
 /**
@@ -10,7 +9,7 @@ import { ConversationError } from "./conversationError";
  * @param username 
  * @returns 
  */
-const isAuthenticated = (username: string) => userEmail.get(username).then(Boolean);
+const isAuthenticated = (username: string) => getUserCachedData(username).then(Boolean);
 
 const isEmailLinked = (email: string) => getUserByEmail(email).then(user => Boolean(user?.telegram_username));
 

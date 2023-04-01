@@ -1,15 +1,59 @@
 import * as request from '../request';
 import { GET, POST } from '../@types/resources';
 
-export function getUserByEmail(email: string): Promise<GET.User | null> {
+export function getUser(username: string): Promise<GET.User | null> {
     return request
-        .get<[] | [GET.User]>(`/users?filters[email][$eq]=${email}`)
+        .get<[] | [GET.User]>(`/users?filters[telegram_username][$eq]=${username}`)
         .then(({ data }) => data.length === 0 ? null : data[0]);
 }
 
-export function getUserByTelegramUsername(username: string): Promise<GET.User | null> {
+type UserData = {
+    id: number;
+    email: string;
+}
+
+const usersCache = new Map<string, UserData>();
+
+/**
+ * Cached request
+ */
+export async function getUserCachedData(username: string): Promise<UserData | null> {
+    if (!username) {
+        return null;
+    }
+
+    let user = usersCache.get(username) ?? null;
+
+    if(!user){
+        user = await getUser(username);
+        if(user){
+            usersCache.set(username, {
+                id: user.id,
+                email: user.email
+            });
+        }
+    }
+
+    return user;
+}
+
+/**
+ * Cached request
+ */
+export async function getUserId(username: string): Promise<number | null> {
+    return getUserCachedData(username).then(user => user ? user.id : null);
+}
+
+/**
+ * Cached request
+ */
+export async function getUserEmail(username: string): Promise<string | null> {
+    return getUserCachedData(username).then(user => user ? user.email : null);
+}
+
+export function getUserByEmail(email: string): Promise<GET.User | null> {
     return request
-        .get<[] | [GET.User]>(`/users?filters[telegram_username][$eq]=${username}`)
+        .get<[] | [GET.User]>(`/users?filters[email][$eq]=${email}`)
         .then(({ data }) => data.length === 0 ? null : data[0]);
 }
 
