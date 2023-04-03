@@ -13,11 +13,12 @@ const init = () => authorize().then(createBot).then(async bot => {
 })
 
 init().then((bot) => {
-    useConversations(bot);
-
+    
     useAuthenticationBoundary(bot);
 
     useCommands(bot);
+    useConversations(bot);
+
     useCallbackQueries(bot);
 
     bot.start({

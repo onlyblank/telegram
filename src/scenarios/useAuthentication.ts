@@ -35,7 +35,6 @@ async function authentication(
     }
 
     await ctx.conversation.enter("authenticationConversation");
-    return await next();
 }
 
 async function waitForValidEmail(conversation: Conversation<any>): Promise<string> {
@@ -43,7 +42,7 @@ async function waitForValidEmail(conversation: Conversation<any>): Promise<strin
     const email = context.msg.text;
 
     if ( !isEmailCorrect(email) ) {
-        throw new ConversationError("Введеная строка не является адресом электронной почты.");
+        throw new ConversationError("Введенная строка не является адресом электронной почты.");
     }
 
     const isEmailTaken = await conversation.external(() => isEmailLinked(email));
@@ -85,10 +84,11 @@ export async function authenticationConversation(conversation: Conversation<any>
     catch (error) {
         await ctx.reply("Неизвестная ошибка. Попробуйте позже.");
         // Dont throw to keep user inside conversation.
-        console.error(error)
+        await conversation.external(() => console.error(error));
     }
 }
 
 export const useAuthenticationBoundary = (bot: Bot) => {
+    bot.use(createConversation(authenticationConversation));
     bot.use(authentication);
 };

@@ -9,6 +9,5 @@ import { authenticationConversation } from "./useAuthentication";
 export function useConversations(bot: Bot) {
     bot.use(createConversation(slashStartConversation));
     bot.use(createConversation(loopConversation));
-    bot.use(createConversation(authenticationConversation));
     bot.use(createConversation(testSolutionConversation))
 }
