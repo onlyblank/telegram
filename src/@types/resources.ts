@@ -22,6 +22,30 @@ export namespace GET {
         id: number;
         title: string;
     }
+
+    interface TextField {
+        __component: "task-field.text";
+        id: number;
+        text: string;
+    }
+    
+    interface RichTextField {
+        __component: "task-field.rich-text";
+        id: number;
+        text: string;
+    }
+    
+    interface CodeField {
+        __component: "task-field.code";
+        id: number;
+        code: string;
+        language: string;
+    }
+
+    export interface Task extends Updatable {
+        id: number;
+        fields: (TextField | RichTextField | CodeField)[];
+    }
 }
 
 export namespace POST {

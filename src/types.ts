@@ -1,5 +1,9 @@
 import { Conversation, ConversationFlavor } from "@grammyjs/conversations";
-import { Context } from "grammy";
+import { Context, SessionFlavor } from "grammy";
 
-export type MyContext = Context & ConversationFlavor;
+interface Session {
+    currentTestId: number | null
+}
+
+export type MyContext = Context & ConversationFlavor & SessionFlavor<Session>;
 export type MyConversation = Conversation<MyContext>;
