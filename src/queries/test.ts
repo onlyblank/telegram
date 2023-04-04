@@ -9,7 +9,19 @@ export async function getAssignedTests(username: string): Promise<GET.Test[]> {
     }
     return request
         .get<GET.Test[]>(`/users/${userId}/tests/assigned`)
-        .then(({data}) => data)
+        .then(({ data }) => data)
+        .catch(() => []);
+}
+
+export async function getSolvableTests(username: string): Promise<GET.ExtendedTestInformation[]> {
+    const userId = await getUserId(username);
+    if(userId === null) {
+        return [];
+    }
+
+    return request
+        .get<GET.ExtendedTestInformation[]>(`/users/${userId}/tests/solvable`)
+        .then(({ data }) => data)
         .catch(() => []);
 }
 

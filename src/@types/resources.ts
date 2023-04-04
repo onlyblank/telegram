@@ -32,6 +32,11 @@ export namespace GET {
         title: string;
     }
 
+    export interface ExtendedTestInformation extends Test {
+        tasksCount: number;
+        solvedTasksCount: number;
+    };
+
     export interface TextField extends Identifiable {
         __component: "task-field.text";
         text: string;

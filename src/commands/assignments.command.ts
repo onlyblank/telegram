@@ -2,14 +2,17 @@ import { Bot, InlineKeyboard } from "grammy";
 import { GET } from "src/@types/resources";
 import { enterTestSolution } from "../scenarios/testSolution";
 import { MyContext } from "src/types";
-import { getAssignedTests } from "../queries/test";
+import { getSolvableTests } from "../queries/test";
 import { Command } from "./types";
 
-function createKeyboard(tests: GET.Test[]): InlineKeyboard {
+function createKeyboard(tests: GET.ExtendedTestInformation[]): InlineKeyboard {
     const keyboard = new InlineKeyboard();
 
     for(const test of tests) {
-        keyboard.text(test.title, `tests/enter/${test.id}`).row();
+        keyboard.text(
+            `${test.title} [${test.solvedTasksCount}/${test.tasksCount}]`,
+            `tests/enter/${test.id}`
+        ).row();
     }
 
     return keyboard;
@@ -18,7 +21,7 @@ function createKeyboard(tests: GET.Test[]): InlineKeyboard {
 const middleware: Command['middleware'] = async (ctx) => {
     const username = ctx.from?.username;
 
-    const tests = username ? await getAssignedTests(username) : [];
+    const tests = username ? await getSolvableTests(username) : [];
 
     const message = tests.length !== 0 
         ? "Список доступных тестов:" 
