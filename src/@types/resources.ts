@@ -3,9 +3,20 @@ interface Updatable {
     updatedAt: string;
 }
 
+interface Identifiable {
+    id: number;
+}
+
+export interface StrapiGetResponse<Model extends Identifiable> {
+    data: { 
+        id: Model['id'];
+        attributes: Omit<Model, 'id'>;
+    };
+    meta: Record<any, any>;
+} 
+
 export namespace GET {
-    export interface User extends Updatable {
-        id: number;
+    export interface User extends Updatable, Identifiable {
         username: string;
         email: string;
         telegram_username: string | null;
@@ -13,37 +24,31 @@ export namespace GET {
         blocked: boolean;
     }
 
-    export interface Course extends Updatable {
-        id: number;
+    export interface Course extends Updatable, Identifiable {
         name: string;
     }
 
-    export interface Test extends Updatable {
-        id: number;
+    export interface Test extends Updatable, Identifiable {
         title: string;
     }
 
-    interface TextField {
+    export interface TextField extends Identifiable {
         __component: "task-field.text";
-        id: number;
         text: string;
     }
     
-    interface RichTextField {
+    export interface RichTextField extends Identifiable {
         __component: "task-field.rich-text";
-        id: number;
         text: string;
     }
     
-    interface CodeField {
+    export interface CodeField extends Identifiable{
         __component: "task-field.code";
-        id: number;
         code: string;
         language: string;
     }
 
-    export interface Task extends Updatable {
-        id: number;
+    export interface Task extends Updatable, Identifiable {
         fields: (TextField | RichTextField | CodeField)[];
     }
 }
