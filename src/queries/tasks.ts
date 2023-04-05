@@ -24,3 +24,15 @@ export async function createTaskAnswer(dto: {
     }
     })
 }
+
+export async function taskAsImage(taskId: number): Promise<Buffer> {
+    return request
+        .get(`/tasks/${taskId}/asImage`, {
+            responseType: 'arraybuffer'
+        })
+        .then(({ data }) => data)
+        // .then(data => {
+        //     console.log(data);
+        //     return data;
+        // })
+}
