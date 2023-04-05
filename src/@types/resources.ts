@@ -55,6 +55,7 @@ export namespace GET {
 
     export interface Task extends Updatable, Identifiable {
         fields: (TextField | RichTextField | CodeField)[];
+        telegram_file_id: string;
     }
 }
 

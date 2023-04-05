@@ -1,7 +1,7 @@
 import { Conversation } from "@grammyjs/conversations";
 import { GET } from "src/@types/resources";
 import { getTest } from "../queries/test";
-import { createTaskAnswer, getUnsolvedTasks, taskAsImage } from "../queries/tasks";
+import { createTaskAnswer, getUnsolvedTasks, taskAsImage, updateTaskFileId } from "../queries/tasks";
 import { getUserId } from "../queries/user";
 import { MyContext } from "../types";
 import { InputFile } from "grammy";
@@ -31,17 +31,19 @@ function renderTextTask(task: GET.Task): string {
  * Sends image when possible. Else uses text fallback.
  */
 async function sendTaskBody(ctx: MyContext, task: GET.Task) {
-    const stream = await taskAsImage(task.id);
+    
+}
 
-    try { 
-        const file = new InputFile(stream);
-        return await ctx.replyWithPhoto(file);
+async function getTaskBodyAsImage(task: GET.Task): Promise<string | InputFile> {
+    // Send cached image.
+    if (task.telegram_file_id){
+        return task.telegram_file_id; 
     }
-    catch{
-        return await ctx.reply(renderTextTask(task), {
-            parse_mode: "MarkdownV2"
-        });  
-    }
+    // Upload and cache.
+    const buffer = await taskAsImage(task.id);
+    const file = new InputFile(buffer, `task${task.id}`);
+
+    return file;
 }
 
 export async function testSolutionConversation(conversation: Conversation<MyContext>, ctx: MyContext) {
@@ -60,14 +62,29 @@ export async function testSolutionConversation(conversation: Conversation<MyCont
     await ctx.reply(initialTasksCount
         ? `Вы начали решать тест "${test.title}", состоящий из ${initialTasksCount} заданий.`
         : `Тест уже был решен или в нем нет заданий`
-    );    
+    );
 
     let tasksSolved = 0;
     while(tasks.length !== 0) {
-        const task = tasks[0];  
+        const task = tasks[0];
         await ctx.reply(`Задание [${initialTasksCount - tasks.length + 1}/${initialTasksCount}]:`);      
-        // Possible conversation.external
-        await sendTaskBody(ctx, task);
+
+        try {
+            const image = await conversation.external(() => getTaskBodyAsImage(task));
+            const photoResult = await ctx.replyWithPhoto(image);
+
+            // Run caching asynchronously.
+            if(image instanceof InputFile){
+                const fileId = photoResult.photo[0].file_id;
+                conversation.external(() => updateTaskFileId(task.id, fileId).catch(console.error));
+            }
+        }
+        // Fallback to text rendering.
+        catch {
+            await ctx.reply(renderTextTask(task), {
+                parse_mode: "MarkdownV2"
+            });  
+        }
 
         const { message: { text: answer } } = await conversation.waitFor("message:text");
         await conversation.external(() => createTaskAnswer({

@@ -31,8 +31,12 @@ export async function taskAsImage(taskId: number): Promise<Buffer> {
             responseType: 'arraybuffer'
         })
         .then(({ data }) => data)
-        // .then(data => {
-        //     console.log(data);
-        //     return data;
-        // })
+}
+
+export async function updateTaskFileId(taskId: number, fileId: string): Promise<void> {
+    return request.put(`/tasks/${taskId}`, {
+        data: {
+            telegram_file_id: fileId,
+        }
+    });
 }
