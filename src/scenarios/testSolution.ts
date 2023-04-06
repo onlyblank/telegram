@@ -27,13 +27,6 @@ function renderTextTask(task: GET.Task): string {
     return task.fields.map(renderTaskField).join("\n");
 }
 
-/**
- * Sends image when possible. Else uses text fallback.
- */
-async function sendTaskBody(ctx: MyContext, task: GET.Task) {
-    
-}
-
 async function getTaskBodyAsImage(task: GET.Task): Promise<string | InputFile> {
     // Send cached image.
     if (task.telegram_file_id){
@@ -41,9 +34,7 @@ async function getTaskBodyAsImage(task: GET.Task): Promise<string | InputFile> {
     }
     // Upload and cache.
     const buffer = await taskAsImage(task.id);
-    const file = new InputFile(buffer, `task${task.id}`);
-
-    return file;
+    return new InputFile(buffer, `task${task.id}`);
 }
 
 export async function testSolutionConversation(conversation: Conversation<MyContext>, ctx: MyContext) {

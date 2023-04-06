@@ -4,7 +4,6 @@ import { Bot } from "grammy";
 import { loopConversation } from './loop';
 import { slashStartConversation } from "./slashStart";
 import { testSolutionConversation } from "./testSolution";
-import { authenticationConversation } from "./useAuthentication";
 
 export function useConversations(bot: Bot) {
     bot.use(createConversation(slashStartConversation));
