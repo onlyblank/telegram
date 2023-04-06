@@ -1,3 +1,5 @@
+import { Identifiable } from "src/@types/resources";
+
 interface CacheOptions {
     cacheTime: number;
 }
@@ -17,3 +19,17 @@ export function withCache<TFn extends (...args: any[]) => TRValue, TRValue>(fn: 
 
     return curried as TFn;
 }
+
+export interface StrapiEntity<Model extends Identifiable> { 
+    id: Model['id'];
+    attributes: Omit<Model, 'id'>;
+}
+
+export interface StrapiGetReponse<Model extends Identifiable> {
+    data: StrapiEntity<Model>;
+    meta: Record<any, any>;
+}
+
+export const normalizeStrapiEntity = <Model extends Identifiable>({ id, attributes } : StrapiEntity<Model>) => ({ ...attributes, id }) as Model;
+
+export const destructurizeData = <T>({ data }: { data: T }) => data;

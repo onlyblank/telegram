@@ -1,5 +1,6 @@
-import { GET, StrapiGetResponse } from "../@types/resources";
+import { GET } from "../@types/resources";
 import * as request from "../request";
+import { destructurizeData, normalizeStrapiEntity, StrapiEntity, StrapiGetReponse } from "./helpers";
 import { getUserId } from "./user";
 
 export async function getAssignedTests(username: string): Promise<GET.Test[]> {
@@ -25,8 +26,25 @@ export async function getSolvableTests(username: string): Promise<GET.ExtendedTe
         .catch(() => []);
 }
 
-export async function getTest(testId: number): Promise<GET.Test> {
+export async function getTest(testId: number): Promise<GET.Test>{
     return request
-        .get<StrapiGetResponse<GET.Test>>(`/tests/${testId}`)
-        .then(({ data: { data: { id, attributes} }}) => ({ ...attributes, id }));
+        .get<StrapiGetReponse<GET.Test>>(`/tests/${testId}`)
+        .then(({ data: {data} }) => data)
+        .then(normalizeStrapiEntity);
 }
+
+export async function isTestOwner(userId: number, testId: number): Promise<boolean> {
+    return request
+        .get<{ data: boolean }>(`/users/${userId}/tests/${testId}/isOwner`)
+        .then(destructurizeData)
+        .then(destructurizeData)
+        .catch(() => false);
+}
+
+export async function publishTest(testId: number) {
+    return request.put(`/tests/${testId}`, {
+        data: {
+            publishedAt: new Date().toISOString(),
+        }
+    });
+} 

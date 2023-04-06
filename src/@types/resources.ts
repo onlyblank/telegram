@@ -1,19 +1,15 @@
+export interface Identifiable {
+    id: number;
+}
+
 interface Updatable {
     createdAt: string;
     updatedAt: string;
 }
 
-interface Identifiable {
-    id: number;
+interface Draftable {
+    publishedAt: string | null;
 }
-
-export interface StrapiGetResponse<Model extends Identifiable> {
-    data: { 
-        id: Model['id'];
-        attributes: Omit<Model, 'id'>;
-    };
-    meta: Record<any, any>;
-} 
 
 export namespace GET {
     export interface User extends Updatable, Identifiable {
@@ -28,7 +24,7 @@ export namespace GET {
         name: string;
     }
 
-    export interface Test extends Updatable, Identifiable {
+    export interface Test extends Updatable, Identifiable, Draftable {
         title: string;
     }
 
