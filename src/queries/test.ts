@@ -29,7 +29,7 @@ export async function getSolvableTests(username: string): Promise<GET.ExtendedTe
 export async function getTest(testId: number): Promise<GET.Test>{
     return request
         .get<StrapiGetReponse<GET.Test>>(`/tests/${testId}`)
-        .then(({ data: {data} }) => data)
+        .then(({ data: { data } }) => data)
         .then(normalizeStrapiEntity);
 }
 
