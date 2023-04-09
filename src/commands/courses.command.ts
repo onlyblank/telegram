@@ -110,9 +110,9 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
         const notifications = await Promise.allSettled(
             suitableUsers
             .map(({ 
-                username, 
+                telegram_chat_id, 
                 unsolvedTasksCount 
-            }) => bot.api.sendMessage('@'+username, `У вас есть тест с ${unsolvedTasksCount} нерешенными заданиями. <вставить клаву>`))
+            }) => bot.api.sendMessage(telegram_chat_id!, `У вас есть тест с ${unsolvedTasksCount} нерешенными заданиями. <вставить клаву>`))
         );
 
         const errors = notifications.filter(({ status }) => status === 'rejected').length;
@@ -121,7 +121,7 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
 
 
         const lines: [message: string, shouldShow: boolean][] = [
-            [`Уведомление было успешно отправлено ${successes} пользователям`, true],
+            [`Успешных уведомлений ${successes}`, true],
             [`Неуспешных уведомлений: ${errors}`, errors > 0],
             [`Пользователей, не привязавших почту: ${notRegistered}`, notRegistered > 0]
         ];
