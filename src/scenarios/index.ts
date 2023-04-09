@@ -1,10 +1,12 @@
 import { createConversation } from "@grammyjs/conversations";
 import { Bot } from "grammy";
 
-import { registrationConversation } from './registration';
 import { loopConversation } from './loop';
+import { slashStartConversation } from "./slashStart";
+import { testSolutionConversation } from "./testSolution";
 
 export function useConversations(bot: Bot) {
-    bot.use(createConversation(registrationConversation));
+    bot.use(createConversation(slashStartConversation));
     bot.use(createConversation(loopConversation));
+    bot.use(createConversation(testSolutionConversation))
 }

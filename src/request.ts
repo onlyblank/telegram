@@ -35,7 +35,15 @@ function mixHeaders(config?: AxiosRequestConfig<any>): AxiosRequestConfig<any> {
 }
 
 function prependApiUrl(url: string): string {
-    return `${config.API_URL}${url}`;
+    return `${config.API_ENDPOINT}${url}`;
+}
+
+type Method = 'GET' | 'POST' | 'PUT';
+
+const handleError = (method: Method, url: string) => (error) => {
+    console.error(`${method} request failed: ${error}`);
+    console.error(url);
+    throw error;
 }
 
 export function get<T = any, R = AxiosResponse<T, any>, D = any>(
@@ -43,10 +51,7 @@ export function get<T = any, R = AxiosResponse<T, any>, D = any>(
     config?: AxiosRequestConfig<D>
 ): Promise<R> {
     return axios.get<T, R, D>(prependApiUrl(url), mixHeaders(config))
-        .catch(error => {
-            console.error(`GET request failed: ${error}`);
-            throw error;
-        });
+        .catch(handleError('GET', url));
 }
 
 export function post<T = any, R = AxiosResponse<T, any>, D = any>(
@@ -55,8 +60,14 @@ export function post<T = any, R = AxiosResponse<T, any>, D = any>(
     config?: AxiosRequestConfig<D>
 ): Promise<R> {
     return axios.post<T, R, D>(prependApiUrl(url), data, mixHeaders(config))
-        .catch(error => {
-            console.error(`POST request failed: ${error}`);
-            throw error;
-        });
+        .catch(handleError('POST', url));
+}
+
+export function put<T = any, R = AxiosResponse<T, any>, D = any>(
+    url: string,
+    data?: D,
+    config?: AxiosRequestConfig<D>
+): Promise<R> {
+    return axios.put<T, R, D>(prependApiUrl(url), data, mixHeaders(config))
+        .catch(handleError('PUT', url)); 
 }
