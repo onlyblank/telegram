@@ -38,12 +38,12 @@ async function getTaskBodyAsImage(task: GET.Task): Promise<string | InputFile> {
 }
 
 export async function testSolutionConversation(conversation: Conversation<MyContext>, ctx: MyContext) {
-    const username = ctx.from?.username;
+    const chatId = ctx.from?.id!;
     const testId = await conversation.external(() => ctx.session.currentTestId);
-    if(!username || testId === null){
+    if(!chatId || testId === null){
         return;
     }
-    const userId = await conversation.external(() => getUserId(username)) as number;
+    const userId = await conversation.external(() => getUserId(chatId)) as number;
     const test = await conversation.external(() => getTest(testId));
 
     const loadTasksChunk = () => conversation.external(() => getUnsolvedTasks(testId, userId));

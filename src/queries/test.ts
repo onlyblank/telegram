@@ -3,8 +3,8 @@ import * as request from "../request";
 import { destructurizeData, normalizeStrapiEntity, StrapiEntity, StrapiGetReponse } from "./helpers";
 import { getUserId } from "./user";
 
-export async function getAssignedTests(username: string): Promise<GET.Test[]> {
-    const userId = await getUserId(username);
+export async function getAssignedTests(chatId: number): Promise<GET.Test[]> {
+    const userId = await getUserId(chatId);
     if(userId === null) {
         return [];
     }
@@ -14,8 +14,8 @@ export async function getAssignedTests(username: string): Promise<GET.Test[]> {
         .catch(() => []);
 }
 
-export async function getSolvableTests(username: string): Promise<GET.ExtendedTestInformation[]> {
-    const userId = await getUserId(username);
+export async function getSolvableTests(chatId: number): Promise<GET.ExtendedTestInformation[]> {
+    const userId = await getUserId(chatId);
     if(userId === null) {
         return [];
     }

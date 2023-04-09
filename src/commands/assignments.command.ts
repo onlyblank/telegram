@@ -19,9 +19,9 @@ function createKeyboard(tests: GET.ExtendedTestInformation[]): InlineKeyboard {
 }
 
 const middleware: Command['middleware'] = async (ctx) => {
-    const username = ctx.from?.username;
+    const chatId = ctx.from?.id;
 
-    const tests = username ? await getSolvableTests(username) : [];
+    const tests = chatId ? await getSolvableTests(chatId) : [];
 
     const message = tests.length !== 0 
         ? "Список доступных тестов:" 

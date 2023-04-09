@@ -20,8 +20,8 @@ const courseRoute = /^courses\/(\d+)$/;
 const useCourseCallback = (bot: Bot<MyContext>) =>  {
     bot.callbackQuery(courseRoute, async (ctx) => {
         const courseId = +ctx.match[1];
-        const username = ctx.from?.username;
-        const userId = await getUserId(username!);
+        const chatId = ctx.from.id;
+        const userId = await getUserId(chatId);
         
         const hasAccess = await isCourseOwner(courseId, userId!);
         if(!hasAccess) {
@@ -45,8 +45,8 @@ const testRoute = /^tests\/(\d+)$/;
 const useTestCallback = (bot: Bot<MyContext>) =>  {
     bot.callbackQuery(testRoute, async (ctx) => {
         const testId = +ctx.match[1];
-        const username = ctx.from?.username;
-        const userId = await getUserId(username!);
+        const chatId = ctx.from.id;
+        const userId = await getUserId(chatId!);
         
         const hasAccess = await isTestOwner(userId!, testId);
         if(!hasAccess) {
@@ -66,8 +66,8 @@ const publishTestRoute = /^tests\/(\d+)\/publish$/;
 const useTestPublishCallback = (bot: Bot<MyContext>) =>  {
     bot.callbackQuery(publishTestRoute, async (ctx) => {
         const testId = +ctx.match[1];
-        const username = ctx.from?.username;
-        const userId = await getUserId(username!);
+        const chatId = ctx.from.id;
+        const userId = await getUserId(chatId);
 
         const hasAccess = await isTestOwner(userId!, testId);
         if(!hasAccess) {
@@ -90,8 +90,8 @@ const notifyTestRoute = /^tests\/(\d+)\/notify$/;
 const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
     bot.callbackQuery(notifyTestRoute, async (ctx) => {
         const testId = +ctx.match[1];
-        const username = ctx.from?.username;
-        const userId = await getUserId(username!);
+        const chatId = ctx.from.id;
+        const userId = await getUserId(chatId!);
 
         const hasAccess = await isTestOwner(userId!, testId);
         if(!hasAccess) {
@@ -100,8 +100,8 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
         await ctx.answerCallbackQuery();
         
         const users = await getUsersWithUnsolvedTasks(testId);
-        const suitableUsers = users.filter(user => user.telegram_username);
-        const unsuitableUsers = users.filter(user => !user.telegram_username);
+        const suitableUsers = users.filter(user => user.telegram_chat_id);
+        const unsuitableUsers = users.filter(user => !user.telegram_chat_id);
 
         if(unsuitableUsers.length) {
             // console.log(unsuitableUsers)
@@ -195,8 +195,8 @@ async function replyCourseInfo(ctx: MyContext, course: CoursePopulated) {
 
 
 const middleware: Command['middleware'] = async (ctx: CommandContext<MyContext>) => {
-    const username = ctx.from?.username;
-    const userId = await getUserId(username!);
+    const chatId = ctx.from?.id!;
+    const userId = await getUserId(chatId);
     const allCourses = await getAssignedAndOwnedCourses(userId!);
     const isTeacher = allCourses.owned_courses.length !== 0;
     const courses = isTeacher ? allCourses.owned_courses : allCourses.assigned_courses;

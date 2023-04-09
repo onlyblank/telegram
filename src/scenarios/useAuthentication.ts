@@ -1,17 +1,17 @@
 import { Conversation, createConversation } from "@grammyjs/conversations";
 import { Bot, NextFunction } from "grammy";
-import { attachTelegramUsername, getUserByEmail, getUserCachedData } from "../queries/user";
+import { attachTelegramChatId, getUserByEmail, getUserCachedData } from "../queries/user";
 import { MyContext } from "../types";
 import { ConversationError } from "./conversationError";
 
 /**
  * Checks if user with `username` can make authenticated requests.
- * @param username 
+ * @param chatId 
  * @returns 
  */
-const isAuthenticated = (username: string) => getUserCachedData(username).then(Boolean);
+const isAuthenticated = (chatId: number) => getUserCachedData(chatId).then(Boolean);
 
-const isEmailLinked = (email: string) => getUserByEmail(email).then(user => Boolean(user?.telegram_username));
+const isEmailLinked = (email: string) => getUserByEmail(email).then(user => Boolean(user?.telegram_chat_id));
 
 const BASE_MESSAGE = "Чтобы зарегистрироваться, введите свой email, заканчивающийся на @hse.ru или @edu.hse.ru";
 
@@ -28,9 +28,9 @@ async function authentication(
         return await next();
     }
 
-    const username = ctx.from?.username;
+    const chatId = ctx.from?.id!;
 
-    if(!username || await isAuthenticated(username)){
+    if(!chatId || await isAuthenticated(chatId)){
         return await next();
     }
 
@@ -72,9 +72,9 @@ export async function authenticationConversation(conversation: Conversation<any>
     }
     
     try {
-        const username = ctx.from?.username;
-        const user = await conversation.external(() => attachTelegramUsername(username!, email));
-        await ctx.reply(`Пользователь ${username} ${email} Зарегистрирован`);
+        const chatId = ctx.from?.id!;
+        const user = await conversation.external(() => attachTelegramChatId(chatId, email));
+        await ctx.reply(`Пользователь ${chatId} ${email} Зарегистрирован`);
         if(user.password){
             await ctx.reply(`Ваш пароль: ||${user.password}||`, {
                 parse_mode: 'MarkdownV2'

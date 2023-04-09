@@ -15,7 +15,7 @@ export namespace GET {
     export interface User extends Updatable, Identifiable {
         username: string;
         email: string;
-        telegram_username: string | null;
+        telegram_chat_id: number | null;
         confirmed: boolean;
         blocked: boolean;
     }

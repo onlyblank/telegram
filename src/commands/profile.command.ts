@@ -2,12 +2,12 @@ import { getUserCachedData } from "../queries/user";
 import { Command } from "./types";
 
 const middleware: Command['middleware'] = async (ctx) => {
-    const username = ctx.from?.username;
-    if(!username){
+    const chatId = ctx.from?.id!;
+    if(!chatId){
         return;
     }
 
-    const user = await getUserCachedData(username);
+    const user = await getUserCachedData(chatId);
     if(!user){
         return;
     }
