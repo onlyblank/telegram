@@ -11,7 +11,7 @@ function createKeyboard(tests: GET.ExtendedTestInformation[]): InlineKeyboard {
     for(const test of tests) {
         keyboard.text(
             `${test.title} [${test.solvedTasksCount}/${test.tasksCount}]`,
-            `tests/enter/${test.id}`
+            `tests/${test.id}/enter`
         ).row();
     }
 
@@ -34,7 +34,7 @@ const middleware: Command['middleware'] = async (ctx) => {
     return await ctx.reply(message, options);
 };
 
-const route = /^tests\/enter\/(\d+)$/;
+const route = /^tests\/(\d+)\/enter$/;
 
 const useTestEnterCallbackQuery = (bot: Bot<MyContext>) =>  {
     bot.callbackQuery(route, async (ctx) => {

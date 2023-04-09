@@ -1,7 +1,7 @@
 import { getUserId } from "../queries/user";
 import { CoursePopulated, getAssignedAndOwnedCourses,  getCourseExtendedInformation, isCourseOwner } from "../queries/course";
 import { Command } from "./types";
-import { Bot, CommandContext } from "grammy";
+import { Bot, CommandContext, InlineKeyboard } from "grammy";
 import { MyContext } from "src/types";
 import { GET } from "src/@types/resources";
 import { withKeyboard } from "./utils";
@@ -84,7 +84,6 @@ const useTestPublishCallback = (bot: Bot<MyContext>) =>  {
     });
 };
 
-
 const notifyTestRoute = /^tests\/(\d+)\/notify$/;
 
 const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
@@ -100,6 +99,7 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
         await ctx.answerCallbackQuery();
         
         const users = await getUsersWithUnsolvedTasks(testId);
+        const test = await getTest(testId);
         const suitableUsers = users.filter(user => user.telegram_chat_id);
         const unsuitableUsers = users.filter(user => !user.telegram_chat_id);
 
@@ -112,7 +112,9 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
             .map(({ 
                 telegram_chat_id, 
                 unsolvedTasksCount 
-            }) => bot.api.sendMessage(telegram_chat_id!, `У вас есть тест с ${unsolvedTasksCount} нерешенными заданиями. <вставить клаву>`))
+            }) => bot.api.sendMessage(telegram_chat_id!, `Тест "${test.title}" с ${unsolvedTasksCount} нерешенными заданиями.`, {
+                reply_markup: new InlineKeyboard().text('решить сейчас', `tests/${test.id}/enter`)
+            }))
         );
 
         const errors = notifications.filter(({ status }) => status === 'rejected').length;
