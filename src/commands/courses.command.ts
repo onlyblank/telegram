@@ -5,7 +5,7 @@ import { Bot, CommandContext } from "grammy";
 import { MyContext } from "src/types";
 import { GET } from "src/@types/resources";
 import { withKeyboard } from "./utils";
-import { getTest, isTestOwner, publishTest } from "../queries/test";
+import { getTest, getUsersWithUnsolvedTasks, isTestOwner, publishTest } from "../queries/test";
 
 interface MenuPipeline<TArgs extends any[], TRegex, TParams> {
     route: TRegex;
@@ -84,6 +84,57 @@ const useTestPublishCallback = (bot: Bot<MyContext>) =>  {
     });
 };
 
+
+const notifyTestRoute = /^tests\/(\d+)\/notify$/;
+
+const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
+    bot.callbackQuery(notifyTestRoute, async (ctx) => {
+        const testId = +ctx.match[1];
+        const username = ctx.from?.username;
+        const userId = await getUserId(username!);
+
+        const hasAccess = await isTestOwner(userId!, testId);
+        if(!hasAccess) {
+            return await ctx.answerCallbackQuery("У вас нет доступа для выполнения действия");
+        }
+        await ctx.answerCallbackQuery();
+        
+        const users = await getUsersWithUnsolvedTasks(testId);
+        const suitableUsers = users.filter(user => user.telegram_username);
+        const unsuitableUsers = users.filter(user => !user.telegram_username);
+
+        if(unsuitableUsers.length) {
+            // console.log(unsuitableUsers)
+        }
+
+        const notifications = await Promise.allSettled(
+            suitableUsers
+            .map(({ 
+                username, 
+                unsolvedTasksCount 
+            }) => bot.api.sendMessage('@'+username, `У вас есть тест с ${unsolvedTasksCount} нерешенными заданиями. <вставить клаву>`))
+        );
+
+        const errors = notifications.filter(({ status }) => status === 'rejected').length;
+        const successes = notifications.length - errors;
+        const notRegistered = unsuitableUsers.length;
+
+
+        const lines: [message: string, shouldShow: boolean][] = [
+            [`Уведомление было успешно отправлено ${successes} пользователям`, true],
+            [`Неуспешных уведомлений: ${errors}`, errors > 0],
+            [`Пользователей, не привязавших почту: ${notRegistered}`, notRegistered > 0]
+        ];
+
+        return await ctx.reply(
+            lines
+                .filter(([_, shouldShow]) => shouldShow)
+                .map(([ message ]) => message)
+                .join("\n")
+        );
+    });
+};
+
 const createTestManagementKeyboard = withKeyboard((keyboard, testId: number, isPublished: boolean) => 
     isPublished 
         ? keyboard
@@ -143,7 +194,6 @@ async function replyCourseInfo(ctx: MyContext, course: CoursePopulated) {
 }
 
 
-
 const middleware: Command['middleware'] = async (ctx: CommandContext<MyContext>) => {
     const username = ctx.from?.username;
     const userId = await getUserId(username!);
@@ -162,5 +212,6 @@ export const coursesCommand: Command = {
         useCourseCallback, 
         useTestCallback,
         useTestPublishCallback,
+        useTestNotificationCallback
     ]
 }

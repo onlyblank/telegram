@@ -48,3 +48,10 @@ export async function publishTest(testId: number) {
         }
     });
 } 
+
+
+export function getUsersWithUnsolvedTasks(testId: number) {
+    return request
+        .get<(GET.User & { unsolvedTasksCount: number})[]>(`/tests/${testId}/usersWithoutAnswers`)
+        .then(destructurizeData)
+}
