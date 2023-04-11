@@ -16,7 +16,7 @@ const isEmailLinked = (email: string) => getUserByEmail(email).then(user => Bool
 const BASE_MESSAGE = "Чтобы зарегистрироваться, введите свой email, заканчивающийся на @hse.ru или @edu.hse.ru";
 
 const isEmailCorrect = (email: string): boolean => {
-    return /^\w+@(edu\.)?hse\.ru$/.test(email);
+    return /^[\w\.]+@(edu\.)?hse\.ru$/.test(email);
 }
 
 async function authentication(
