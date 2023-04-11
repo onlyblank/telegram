@@ -140,7 +140,7 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
 const createTestManagementKeyboard = withKeyboard((keyboard, testId: number, isPublished: boolean) => 
     isPublished 
         ? keyboard
-            .text(`Напомнить о необходимости решить тест`, `tests/${testId}/notify`)
+            .text(`Отправить уведомление ученикам`, `tests/${testId}/notify`)
             .row()
             .text(`Выгрузить статистику`, `tests/${testId}/downloadStats`)
         : keyboard.text(`Опубликовать`, `tests/${testId}/publish`)
