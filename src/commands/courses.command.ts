@@ -108,8 +108,8 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
             .map(({ 
                 telegram_chat_id, 
                 unsolvedTasksCount 
-            }) => bot.api.sendMessage(telegram_chat_id!, `Тест "${test.title}" с ${unsolvedTasksCount} нерешенными заданиями.`, {
-                reply_markup: new InlineKeyboard().text('решить сейчас', `tests/${test.id}/enter`)
+            }) => bot.api.sendMessage(telegram_chat_id!, `Преподаватель напоминает вам пройти тест "${test.title}" с ${unsolvedTasksCount} нерешенными заданиями.`, {
+                reply_markup: new InlineKeyboard().text('Решить сейчас', `tests/${test.id}/enter`)
             }))
         );
 
@@ -144,7 +144,7 @@ const createTestManagementKeyboard = withKeyboard((keyboard, testId: number, isP
 
 function replyTestInfo(ctx: MyContext, test: GET.Test) {
     const isPublished = Boolean(test.publishedAt);
-    return ctx.reply(`Тест "${test.title}" [${isPublished ? "Опубликован" : "Не опубликован"}]`, {
+    return ctx.reply(`Тест "${test.title}"\n - ${isPublished ? "Опубликован" : "Не опубликован"}]`, {
         reply_markup: createTestManagementKeyboard(test.id, isPublished)
     });
 }
@@ -182,9 +182,9 @@ const createTestsKeyboard = withKeyboard((keyboard, tests: GET.Test[]) => {
 async function replyCourseInfo(ctx: MyContext, course: CoursePopulated) {
     const message = `
 Курс "${course.name}"
-Количество студентов: ${course.students.length}
-Количество тестов: ${course.tests.length}
-Общее количесто заданий: ${course.tasks.length}`;
+ - Количество студентов: ${course.students.length}
+ - Количество тестов: ${course.tests.length}
+ - Общее количесто заданий: ${course.tasks.length}`;
 
     return await ctx.reply(message,{
         reply_markup: createTestsKeyboard(course.tests),
