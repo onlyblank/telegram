@@ -103,10 +103,6 @@ const useTestNotificationCallback = (bot: Bot<MyContext>) =>  {
         const suitableUsers = users.filter(user => user.telegram_chat_id);
         const unsuitableUsers = users.filter(user => !user.telegram_chat_id);
 
-        if(unsuitableUsers.length) {
-            // console.log(unsuitableUsers)
-        }
-
         const notifications = await Promise.allSettled(
             suitableUsers
             .map(({ 
