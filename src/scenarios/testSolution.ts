@@ -97,5 +97,7 @@ export async function testSolutionConversation(conversation: Conversation<MyCont
 export async function enterTestSolution(testId: number, ctx: MyContext) {
     ctx.session.currentTestId = testId;
 
-    return await ctx.conversation.enter('testSolutionConversation');
+    return await ctx.conversation.enter('testSolutionConversation', {
+        overwrite: true,
+    });
 }
